@@ -44,20 +44,20 @@ def detect_optimal_batch_size(model, device, input_shape=(3, 224, 224), max_batc
     # Test the starting batch size
     try:
         model.train()
-        # Create dual dummy inputs for RGB (3 channels) and brightness (1 channel)
-        dummy_rgb = torch.randn(test_batch, 3, 224, 224).to(device)
-        dummy_brightness = torch.randn(test_batch, 1, 224, 224).to(device)
-        dummy_target = torch.randint(0, 1000, (test_batch,)).to(device)
+        # Create test inputs for RGB (3 channels) and brightness (1 channel)
+        test_rgb = torch.randn(test_batch, 3, 224, 224).to(device)
+        test_brightness = torch.randn(test_batch, 1, 224, 224).to(device)
+        test_target = torch.randint(0, 1000, (test_batch,)).to(device)
         
         # Test forward pass
-        output = model(dummy_rgb, dummy_brightness)
-        loss = nn.CrossEntropyLoss()(output, dummy_target)
+        output = model(test_rgb, test_brightness)
+        loss = nn.CrossEntropyLoss()(output, test_target)
         
         # Test backward pass
         loss.backward()
         
         # Clear memory
-        del dummy_rgb, dummy_brightness, dummy_target, output, loss
+        del test_rgb, test_brightness, test_target, output, loss
         torch.cuda.empty_cache()
         
         print(f"✅ Optimal batch size: {test_batch}")
@@ -70,15 +70,15 @@ def detect_optimal_batch_size(model, device, input_shape=(3, 224, 224), max_batc
             for smaller_batch in [test_batch // 2, test_batch // 4, 16, 8]:
                 try:
                     torch.cuda.empty_cache()
-                    dummy_rgb = torch.randn(smaller_batch, 3, 224, 224).to(device)
-                    dummy_brightness = torch.randn(smaller_batch, 1, 224, 224).to(device)
-                    dummy_target = torch.randint(0, 1000, (smaller_batch,)).to(device)
+                    test_rgb = torch.randn(smaller_batch, 3, 224, 224).to(device)
+                    test_brightness = torch.randn(smaller_batch, 1, 224, 224).to(device)
+                    test_target = torch.randint(0, 1000, (smaller_batch,)).to(device)
                     
-                    output = model(dummy_rgb, dummy_brightness)
-                    loss = nn.CrossEntropyLoss()(output, dummy_target)
+                    output = model(test_rgb, test_brightness)
+                    loss = nn.CrossEntropyLoss()(output, test_target)
                     loss.backward()
                     
-                    del dummy_rgb, dummy_brightness, dummy_target, output, loss
+                    del test_rgb, test_brightness, test_target, output, loss
                     torch.cuda.empty_cache()
                     
                     print(f"✅ Optimal batch size: {smaller_batch}")
@@ -208,7 +208,7 @@ def run_deep_training(
     model = ContinuousIntegrationModel(
         num_classes=1000,  # ImageNet-1K
         depth=model_depth,
-        base_channels=64,
+        base_channels=32,  # Reduced from 64 to avoid channel mismatch
         dropout_rate=0.2,
         integration_points=['early', 'middle', 'late'],
         enable_mixed_precision=True,
@@ -219,7 +219,13 @@ def run_deep_training(
     print(f"📊 Model parameters: {sum(p.numel() for p in model.parameters()):,}")
      # Determine batch size first
     if use_auto_batch_size:
-        batch_size = detect_optimal_batch_size(model, device)
+        # For A100, skip detection and use known optimal batch size
+        gpu_name = get_gpu_info().get('name', '').upper()
+        if 'A100' in gpu_name:
+            batch_size = 128
+            print(f"🚀 Using optimized A100 batch size: {batch_size}")
+        else:
+            batch_size = detect_optimal_batch_size(model, device)
     else:
         # Default optimized batch sizes
         gpu_name = get_gpu_info().get('name', '').upper()
