@@ -36,21 +36,40 @@ Multi-Weight Neural Networks (MWNNs) employ multiple weight connections between 
 
 ## Installation
 
-### From Source
+### 🚀 Google Colab (Recommended for Training)
+
+For immediate training on ImageNet with GPU acceleration:
+
+1. **Open the Colab Notebook**: `MWNN_Colab_Training.ipynb`
+2. **Clone from GitHub**:
+   ```python
+   !git clone https://github.com/yourusername/mwnn.git
+   !cd mwnn && pip install -e .
+   ```
+3. **Upload ImageNet data** to Google Drive: `/MyDrive/mwnn/multi-weight-neural-networks/data/ImageNet-1K/`
+4. **Run the notebook** - everything is pre-configured!
+
+### 💻 Local Installation
 
 ```bash
 git clone https://github.com/yourusername/mwnn.git
-cd mwnn
+cd multi-weight-neural-networks
 pip install -e .
 ```
 
-### Requirements
+### 📦 Requirements
 
 - Python >= 3.8
-- PyTorch >= 2.0.0
+- PyTorch >= 2.0.0 (CUDA 12.1+ for Colab)
 - torchvision >= 0.15.0
 - numpy >= 1.21.0
 - See `requirements.txt` for full list
+
+### 🔧 Quick Setup Verification
+
+```bash
+python -c "import torch; print(f'PyTorch: {torch.__version__}, CUDA: {torch.cuda.is_available()}')"
+```
 
 ## 📁 Project Structure
 
@@ -504,6 +523,57 @@ black --check mwnn/
 # Build documentation
 cd docs && make html
 ```
+
+## 🚀 Google Colab Training
+
+### Quick Colab Setup
+
+**Option 1: Clone from GitHub (Recommended)**
+```python
+# In Colab notebook
+!git clone https://github.com/yourusername/mwnn.git
+%cd mwnn/multi-weight-neural-networks
+!pip install -e .
+```
+
+**Option 2: Direct Upload**
+Upload the entire project to Google Drive at `/MyDrive/mwnn/multi-weight-neural-networks/`
+
+### Colab-Optimized Training
+
+The project includes `MWNN_Colab_Training.ipynb` with:
+
+- **✅ Automatic GPU detection** (T4/A100 optimization)
+- **✅ Drive mounting and navigation**
+- **✅ CUDA compatibility fixes**
+- **✅ Optimized batch sizes** (T4: 64, A100: 128)
+- **✅ ImageNet-1K pipeline** ready to run
+
+### Required Drive Structure
+
+```
+/MyDrive/mwnn/multi-weight-neural-networks/
+├── data/ImageNet-1K/              # Your ImageNet dataset
+│   ├── train/                     # Training images (1000 folders)
+│   ├── val/                       # Validation images (.JPEG files)
+│   └── ILSVRC2013_devkit/         # ImageNet devkit
+├── checkpoints/                   # Training results (auto-created)
+├── logs/                          # Training logs (auto-created)
+└── train_deep_colab.py            # Main training script
+```
+
+### One-Click Training
+
+```python
+# Run this in Colab after setup
+!python train_deep_colab.py
+```
+
+**Features:**
+- Automatic batch size optimization for your GPU
+- Real-time training progress with validation
+- Model checkpoints saved to Drive
+- Comprehensive training metrics and visualization
 
 ## Citation
 
