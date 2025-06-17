@@ -40,7 +40,7 @@ runs/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-# Note: We want to include .ipynb files in the repo
+*.ipynb
 
 # Environment
 .env
@@ -69,65 +69,19 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
-# Data directories (exclude all dataset files)
+# Data
 data/
 datasets/
-# Include sample configs and documentation in data dirs
-!data/**/README.md
-!data/**/config.yaml
-!data/**/sample_*
-
-# Large files and datasets
 *.csv
-*.h5
-*.hdf5
-*.parquet
-*.pkl
-*.pickle
-
-# Keep small JSON configs but exclude large data files
-# *.json  # Commented out to allow config files
-*_data.json
-*_dataset.json
-*_results.json
-final_test_results.json
-
-# Keep text docs but exclude large text data files
-# *.txt  # Commented out to allow docs
-*_data.txt
-*_dataset.txt
-requirements*.txt
-!requirements.txt
-!requirements_colab.txt
-
+*.json
+*.txt
 *.xml
 
-# Model outputs and checkpoints
+# Model outputs
 models/
 outputs/
 results/
 experiments/
-checkpoints/
-# Keep checkpoint structure docs
-!checkpoints/README.md
-!**/checkpoint_info.md
-
-# Logs and profiling
-logs/
-*.log
-*.prof
-*.lprof
-
-# MWNN Project specific
-mwnn_colab_package.tar.gz
-*.png
-*.jpg
-*.jpeg
-# Keep important visualization docs  
-!docs/**/*.png
-!README_*.png
-
-# Temporary and cache files
 
 # Documentation
 docs/_build/
@@ -157,3 +111,9 @@ coverage.xml
 .mypy_cache/
 .dmypy.json
 dmypy.json
+# Large binary files
+*.png
+*.tar.gz
+*.jpg
+*.jpeg
+*.gif
