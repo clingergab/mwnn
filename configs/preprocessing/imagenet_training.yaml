@@ -1,0 +1,32 @@
+augment: true
+augment_features: true
+batch_size: 32
+cache_features: true
+cache_labels: true
+color_jitter_brightness: 0.2
+color_jitter_contrast: 0.2
+color_jitter_hue: 0.1
+color_jitter_saturation: 0.2
+data_dir: /path/to/your/ImageNet-1K
+devkit_dir: /path/to/your/ImageNet-1K/ILSVRC2013_devkit
+drop_last: true
+feature_method: rgb_luminance
+horizontal_flip_prob: 0.5
+input_size: 224
+load_subset: null
+mean:
+- 0.485
+- 0.456
+- 0.406
+normalize_features: true
+num_workers: 4
+pin_memory: true
+random_crop_scale:
+- 0.8
+- 1.0
+split: val
+std:
+- 0.229
+- 0.224
+- 0.225
+val_split: 0.1

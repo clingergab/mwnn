@@ -1,0 +1,159 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyTorch
+*.pth
+*.pt
+checkpoint/
+checkpoints/
+
+# Tensorboard
+logs/
+runs/
+*.tfevents.*
+
+# Jupyter Notebook
+.ipynb_checkpoints
+# Note: We want to include .ipynb files in the repo
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Data directories (exclude all dataset files)
+data/
+datasets/
+# Include sample configs and documentation in data dirs
+!data/**/README.md
+!data/**/config.yaml
+!data/**/sample_*
+
+# Large files and datasets
+*.csv
+*.h5
+*.hdf5
+*.parquet
+*.pkl
+*.pickle
+
+# Keep small JSON configs but exclude large data files
+# *.json  # Commented out to allow config files
+*_data.json
+*_dataset.json
+*_results.json
+final_test_results.json
+
+# Keep text docs but exclude large text data files
+# *.txt  # Commented out to allow docs
+*_data.txt
+*_dataset.txt
+requirements*.txt
+!requirements.txt
+!requirements_colab.txt
+
+*.xml
+
+# Model outputs and checkpoints
+models/
+outputs/
+results/
+experiments/
+checkpoints/
+# Keep checkpoint structure docs
+!checkpoints/README.md
+!**/checkpoint_info.md
+
+# Logs and profiling
+logs/
+*.log
+*.prof
+*.lprof
+
+# MWNN Project specific
+mwnn_colab_package.tar.gz
+*.png
+*.jpg
+*.jpeg
+# Keep important visualization docs  
+!docs/**/*.png
+!README_*.png
+
+# Temporary and cache files
+
+# Documentation
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Testing
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Profiling
+*.prof
+*.lprof
+
+# Misc
+*.log
+*.bak
+.mypy_cache/
+.dmypy.json
+dmypy.json
