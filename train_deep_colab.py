@@ -20,7 +20,7 @@ from datetime import datetime
 
 sys.path.append('.')
 
-from src.models.continuous_integration.model import ContinuousIntegrationModel
+from src.models.continuous_integration import ContinuousIntegrationModel
 from src.preprocessing.imagenet_dataset import create_imagenet_mwnn_dataset, get_imagenet_transforms
 from src.preprocessing.imagenet_config import get_preset_config
 from setup_colab import get_gpu_info, get_optimal_settings
