@@ -1,0 +1,77 @@
+# Configuration for Continuous Integration Model
+
+model:
+  name: ContinuousIntegrationModel
+  params:
+    input_channels: 3
+    num_classes: 10
+    feature_extraction_method: hsv  # Options: hsv, yuv, lab, rgb
+    normalize_features: true
+    base_channels: 64
+    depth: medium  # Options: shallow, medium, deep
+    dropout_rate: 0.2
+    integration_points: ['early', 'middle', 'late']  # Options: early, middle, late, all
+
+# Model-specific training settings
+training:
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler: cosine
+  scheduler_params:
+    T_max: 100
+  specific_augmentations:
+    # Continuous integration specific augmentations
+    pathway_consistency_loss: true
+    integration_weight_regularization: 0.01
+    color_jitter_strength: 0.3
+    brightness_jitter_strength: 0.3
+
+# Data settings
+data:
+  dataset: CIFAR10  # Options: CIFAR10, CIFAR100
+  data_dir: ./data
+  num_workers: 4
+  pin_memory: true
+  augmentation:
+    random_crop: true
+    random_horizontal_flip: true
+    normalize: true
+
+# Model-specific architecture details
+architecture:
+  pathway_configs:
+    shallow:
+      blocks: [2, 2]
+      channels: [64, 128]
+    medium:
+      blocks: [2, 2, 2]
+      channels: [64, 128, 256]
+    deep:
+      blocks: [3, 4, 6, 3]
+      channels: [64, 128, 256, 512]
+  
+  integration_configs:
+    early:
+      description: "Early integration after initial feature extraction"
+      stage_positions: [0]
+    middle:
+      description: "Middle integration between processing stages"
+      stage_positions: [1]
+    late:
+      description: "Late integration before final classification"
+      stage_positions: [2]
+    all:
+      description: "Integration at all stages"
+      stage_positions: [0, 1, 2]
+
+# Evaluation settings
+evaluation:
+  metrics:
+    - accuracy
+    - integration_weights_evolution
+    - pathway_contributions
+    - gradient_flow_analysis
+  visualizations:
+    - integration_weights_heatmap
+    - pathway_feature_maps
+    - convergence_analysis

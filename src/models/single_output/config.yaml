@@ -1,0 +1,86 @@
+# Configuration for Single-Output Model
+
+model:
+  name: SingleOutputModel
+  params:
+    input_channels: 3
+    num_classes: 10
+    feature_extraction_method: hsv  # Options: hsv, yuv, lab, rgb
+    normalize_features: true
+    base_channels: 64
+    depth: medium  # Options: shallow, medium, deep
+    dropout_rate: 0.2
+    adaptive_fusion: false  # Whether to use adaptive fusion mechanisms
+
+# Model-specific training settings
+training:
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler: cosine
+  scheduler_params:
+    T_max: 100
+  specific_augmentations:
+    # Single-output specific augmentations
+    weight_specialization_loss: 0.01
+    feature_diversity_regularization: 0.005
+    color_jitter_strength: 0.3
+    brightness_jitter_strength: 0.3
+
+# Data settings
+data:
+  dataset: CIFAR10  # Options: CIFAR10, CIFAR100
+  data_dir: ./data
+  num_workers: 4
+  pin_memory: true
+  augmentation:
+    random_crop: true
+    random_horizontal_flip: true
+    normalize: true
+
+# Model-specific architecture details
+architecture:
+  pathway_configs:
+    shallow:
+      blocks: [2, 2]
+      channels: [64, 128]
+    medium:
+      blocks: [2, 2, 2]
+      channels: [64, 128, 256]
+    deep:
+      blocks: [3, 4, 6, 3]
+      channels: [64, 128, 256, 512]
+  
+  fusion_configs:
+    adaptive_fusion:
+      description: "Adaptive fusion with learnable gating"
+      enabled: false
+    static_fusion:
+      description: "Static weighted combination"
+      enabled: true
+      color_weight: 0.6
+      brightness_weight: 0.4
+    
+  multi_weight_settings:
+    neuron_type: "practical"  # Options: practical, adaptive
+    weight_sharing: false
+    specialized_pathways: true
+    
+  layer_configs:
+    multi_weight_layers:
+      enabled: true
+      layer_positions: ["final"]  # Options: all, intermediate, final
+    residual_connections:
+      enabled: true
+      type: "standard"  # Options: standard, multi_weight
+
+# Evaluation settings
+evaluation:
+  metrics:
+    - accuracy
+    - weight_specialization
+    - pathway_utilization
+    - feature_diversity
+  visualizations:
+    - weight_distribution
+    - pathway_contributions
+    - specialization_analysis

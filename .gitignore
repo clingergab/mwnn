@@ -77,8 +77,10 @@ datasets/
 *.txt
 *.xml
 
-# Model outputs
-models/
+# Model outputs (trained model files, not source code)
+trained_models/
+saved_models/
+model_weights/
 outputs/
 results/
 experiments/

@@ -1,0 +1,85 @@
+# Configuration for Attention-Based Model
+
+model:
+  name: AttentionBasedModel
+  params:
+    input_channels: 3
+    num_classes: 10
+    feature_extraction_method: hsv  # Options: hsv, yuv, lab, rgb
+    normalize_features: true
+    base_channels: 64
+    depth: medium  # Options: shallow, medium, deep
+    attention_dim: 64
+    num_attention_heads: 4
+    dropout_rate: 0.2
+    attention_dropout: 0.1
+
+# Model-specific training settings
+training:
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler: cosine
+  scheduler_params:
+    T_max: 100
+  specific_augmentations:
+    # Attention-based specific augmentations
+    attention_dropout_schedule: true
+    cross_modal_attention_regularization: 0.01
+    color_jitter_strength: 0.4
+    brightness_jitter_strength: 0.4
+
+# Data settings
+data:
+  dataset: CIFAR10  # Options: CIFAR10, CIFAR100
+  data_dir: ./data
+  num_workers: 4
+  pin_memory: true
+  augmentation:
+    random_crop: true
+    random_horizontal_flip: true
+    normalize: true
+
+# Model-specific architecture details
+architecture:
+  pathway_configs:
+    shallow:
+      blocks: [2, 2]
+      channels: [64, 128]
+    medium:
+      blocks: [2, 2, 2]
+      channels: [64, 128, 256]
+    deep:
+      blocks: [3, 4, 6, 3]
+      channels: [64, 128, 256, 512]
+  
+  attention_configs:
+    cross_modal_attention:
+      description: "Cross-attention between color and brightness pathways"
+      enabled: true
+    global_attention_pooling:
+      description: "Global attention-based feature pooling"
+      enabled: true
+    self_attention:
+      description: "Self-attention within pathways"
+      enabled: false
+    
+  attention_mechanisms:
+    multi_head:
+      num_heads: 4
+      head_dim: 16
+      dropout: 0.1
+    global_pooling:
+      pooling_type: "attention"  # Options: attention, adaptive, max, avg
+      attention_dim: 64
+
+# Evaluation settings
+evaluation:
+  metrics:
+    - accuracy
+    - attention_weights_analysis
+    - cross_modal_correlation
+    - attention_diversity
+  visualizations:
+    - attention_maps
+    - cross_modal_attention_flow
+    - attention_head_specialization

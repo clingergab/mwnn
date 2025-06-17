@@ -1,0 +1,69 @@
+# Configuration for Multi-Channel Model
+
+model:
+  name: MultiChannelModel
+  params:
+    input_channels: 3
+    num_classes: 10
+    feature_extraction_method: hsv  # Options: hsv, yuv, lab, rgb
+    normalize_features: true
+    base_channels: 64
+    depth: medium  # Options: shallow, medium, deep
+    dropout_rate: 0.2
+    fusion_method: adaptive  # Options: concatenate, add, adaptive, attention
+
+# Model-specific training settings
+training:
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler: cosine
+  scheduler_params:
+    T_max: 100
+  specific_augmentations:
+    augment_pathways_separately: true
+    color_jitter_strength: 0.4
+    brightness_jitter_strength: 0.4
+
+# Data settings
+data:
+  dataset: CIFAR10  # Options: CIFAR10, CIFAR100
+  data_dir: ./data
+  num_workers: 4
+  pin_memory: true
+  augmentation:
+    random_crop: true
+    random_horizontal_flip: true
+    normalize: true
+
+# Model-specific architecture details
+architecture:
+  pathway_configs:
+    shallow:
+      blocks: [2, 2]
+      channels: [64, 128]
+    medium:
+      blocks: [2, 2, 2]
+      channels: [64, 128, 256]
+    deep:
+      blocks: [3, 4, 6, 3]
+      channels: [64, 128, 256, 512]
+  
+  fusion_options:
+    concatenate:
+      description: "Simple concatenation of features"
+    add:
+      description: "Element-wise addition"
+    adaptive:
+      description: "Learned gating mechanism"
+    attention:
+      description: "Attention-based fusion"
+
+# Evaluation settings
+evaluation:
+  metrics:
+    - accuracy
+    - pathway_correlation
+    - fusion_weights_entropy
+  visualizations:
+    - pathway_activations
+    - fusion_weights_over_time

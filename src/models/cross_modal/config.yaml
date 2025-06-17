@@ -1,0 +1,77 @@
+# Configuration for Cross-Modal Model
+
+model:
+  name: CrossModalModel
+  params:
+    input_channels: 3
+    num_classes: 10
+    feature_extraction_method: hsv  # Options: hsv, yuv, lab, rgb
+    normalize_features: true
+    base_channels: 64
+    depth: medium  # Options: shallow, medium, deep
+    cross_influence: 0.1  # Strength of cross-modal influence (0.0 to 1.0)
+    dropout_rate: 0.2
+
+# Model-specific training settings
+training:
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler: cosine
+  scheduler_params:
+    T_max: 100
+  specific_augmentations:
+    # Cross-modal specific augmentations
+    cross_influence_schedule: true
+    pathway_independence_loss: 0.01
+    color_jitter_strength: 0.4
+    brightness_jitter_strength: 0.4
+
+# Data settings
+data:
+  dataset: CIFAR10  # Options: CIFAR10, CIFAR100
+  data_dir: ./data
+  num_workers: 4
+  pin_memory: true
+  augmentation:
+    random_crop: true
+    random_horizontal_flip: true
+    normalize: true
+
+# Model-specific architecture details
+architecture:
+  pathway_configs:
+    shallow:
+      blocks: [2, 2]
+      channels: [64, 128]
+    medium:
+      blocks: [2, 2, 2]
+      channels: [64, 128, 256]
+    deep:
+      blocks: [3, 4, 6, 3]
+      channels: [64, 128, 256, 512]
+  
+  cross_modal_configs:
+    influence_type: "bidirectional"  # Options: bidirectional, color_to_brightness, brightness_to_color
+    influence_stages: ["all"]  # Options: early, middle, late, all
+    influence_mechanism: "linear"  # Options: linear, attention, gating
+    
+  cross_attention_settings:
+    cross_influence_strength: 0.1
+    influence_regularization: 0.01
+    bidirectional_influence: true
+    
+  fusion_settings:
+    final_fusion: "weighted_sum"  # Options: concatenate, weighted_sum, attention
+    fusion_weights_learnable: true
+
+# Evaluation settings
+evaluation:
+  metrics:
+    - accuracy
+    - cross_modal_influence_strength
+    - pathway_independence
+    - information_flow_analysis
+  visualizations:
+    - cross_modal_influence_maps
+    - pathway_interaction_matrix
+    - influence_strength_over_time
