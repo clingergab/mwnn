@@ -21,7 +21,7 @@ from datetime import datetime
 sys.path.append('.')
 
 from src.models.continuous_integration import ContinuousIntegrationModel
-from src.preprocessing.imagenet_dataset import create_imagenet_mwnn_dataset, get_imagenet_transforms
+from src.preprocessing.imagenet_dataset import create_imagenet_dataloaders, get_imagenet_transforms
 from src.preprocessing.imagenet_config import get_preset_config
 from setup_colab import get_gpu_info, get_optimal_settings
 
@@ -206,22 +206,7 @@ def run_deep_training(
     model = model.to(device)
     
     print(f"📊 Model parameters: {sum(p.numel() for p in model.parameters()):,}")
-    
-    # Setup data transforms
-    transforms_dict = get_imagenet_transforms()
-    
-    # Create datasets and dataloaders
-    print("📚 Creating ImageNet datasets...")
-    train_dataset, val_dataset = create_imagenet_mwnn_dataset(
-        data_dir=data_dir,
-        devkit_dir=devkit_dir,
-        transforms=transforms_dict
-    )
-    
-    print(f"📊 Training samples: {len(train_dataset):,}")
-    print(f"📊 Validation samples: {len(val_dataset):,}")
-    
-    # Determine batch size
+     # Determine batch size first
     if use_auto_batch_size:
         batch_size = detect_optimal_batch_size(model, device)
     else:
@@ -233,25 +218,24 @@ def run_deep_training(
             batch_size = 64
         else:
             batch_size = 32
+
+    # Create datasets and dataloaders
+    print("📚 Creating ImageNet dataloaders...")
+    train_loader, val_loader = create_imagenet_dataloaders(
+        data_dir=data_dir,
+        devkit_dir=devkit_dir,
+        batch_size=batch_size,
+        input_size=config.input_size,
+        feature_method=config.feature_method,
+        num_workers=config.num_workers,
+        load_subset=config.load_subset,
+        val_split=0.1
+    )
+    
+    print(f"📊 Training batches: {len(train_loader):,}")
+    print(f"📊 Validation batches: {len(val_loader):,}")
     
     print(f"📦 Batch size: {batch_size}")
-    
-    # Create data loaders
-    train_loader = DataLoader(
-        train_dataset, 
-        batch_size=batch_size, 
-        shuffle=True, 
-        num_workers=2,
-        pin_memory=True
-    )
-    
-    val_loader = DataLoader(
-        val_dataset, 
-        batch_size=batch_size, 
-        shuffle=False, 
-        num_workers=2,
-        pin_memory=True
-    )
     
     # Setup training
     criterion = nn.CrossEntropyLoss()
