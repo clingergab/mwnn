@@ -14,6 +14,7 @@ import torchvision.transforms as transforms
 import json
 import time
 import sys
+import argparse
 from pathlib import Path
 from datetime import datetime
 
@@ -385,6 +386,18 @@ def main():
 
 
 if __name__ == "__main__":
+    # Add command line argument support
+    parser = argparse.ArgumentParser(description='Deep MWNN Training on ImageNet')
+    parser.add_argument('--data_dir', type=str, 
+                       default='/content/drive/MyDrive/mwnn/multi-weight-neural-networks/data/ImageNet-1K',
+                       help='Path to ImageNet data directory')
+    parser.add_argument('--devkit_dir', type=str,
+                       default='/content/drive/MyDrive/mwnn/multi-weight-neural-networks/data/ImageNet-1K/ILSVRC2013_devkit', 
+                       help='Path to ImageNet devkit directory')
+    parser.add_argument('--epochs', type=int, default=30, help='Number of epochs to train')
+    
+    args = parser.parse_args()
+    
     print("🚀 Deep MWNN Training on ImageNet")
     print("Optimized for Google Colab with T4/A100 GPU support")
     print("📋 Training deep models on ImageNet-1K from Google Drive")
@@ -404,11 +417,26 @@ if __name__ == "__main__":
         print("   Runtime > Change runtime type > GPU > T4 or A100")
         sys.exit(1)
     
-    # Check ImageNet data
-    imagenet_path = Path('/content/drive/MyDrive/mwnn/multi-weight-neural-networks/data/ImageNet-1K')
-    if not imagenet_path.exists():
-        print("⚠️  ImageNet data not found!")
-        print("📁 Expected path: /content/drive/MyDrive/mwnn/multi-weight-neural-networks/data/ImageNet-1K")
+    # Check ImageNet data with fallback paths
+    imagenet_paths_to_try = [
+        args.data_dir,
+        '/content/drive/MyDrive/mwnn/multi-weight-neural-networks/data/ImageNet-1K',
+        '/content/drive/MyDrive/projects/mwnn/multi-weight-neural-networks/data/ImageNet-1K',
+        'data/ImageNet-1K'
+    ]
+    
+    found_data_path = None
+    for path in imagenet_paths_to_try:
+        if Path(path).exists():
+            found_data_path = path
+            print(f"✅ Found ImageNet data at: {path}")
+            break
+    
+    if not found_data_path:
+        print("⚠️  ImageNet data not found in any expected location!")
+        print("📁 Checked paths:")
+        for path in imagenet_paths_to_try:
+            print(f"   ❌ {path}")
         print("💡 Please upload ImageNet-1K dataset to your Google Drive")
         
         # Try to provide guidance
@@ -421,7 +449,23 @@ if __name__ == "__main__":
                         print(f"   📂 {item.name}/")
             except:
                 pass
-        
-        # Don't exit, let the training function handle the error gracefully
+        sys.exit(1)
     
-    main()
+    # Update devkit path based on found data path
+    if found_data_path != args.data_dir:
+        devkit_path = f"{found_data_path}/ILSVRC2013_devkit"
+    else:
+        devkit_path = args.devkit_dir
+    
+    # Run training with discovered paths
+    try:
+        results, _ = run_deep_training(
+            data_dir=found_data_path,
+            devkit_dir=devkit_path,
+            epochs=args.epochs
+        )
+        print(f"\n🎉 Training completed successfully!")
+        print(f"📊 Best validation accuracy: {results.get('best_val_acc', 'N/A')}")
+    except Exception as e:
+        print(f"❌ Training failed: {e}")
+        sys.exit(1)
