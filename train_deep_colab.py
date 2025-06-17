@@ -17,13 +17,73 @@ import sys
 import argparse
 from pathlib import Path
 from datetime import datetime
+import gc
 
 sys.path.append('.')
 
 from src.models.continuous_integration import ContinuousIntegrationModel
-from src.preprocessing.imagenet_dataset import create_imagenet_separate_pathway_dataloaders, get_imagenet_transforms
+from src.preprocessing.imagenet_dataset import create_imagenet_separate_pathway_dataloaders
 from src.preprocessing.imagenet_config import get_preset_config
-from setup_colab import get_gpu_info, get_optimal_settings
+from setup_colab import get_gpu_info
+
+
+# GPU Memory Management and Cleanup
+def clear_gpu_memory():
+    """Clear GPU memory and kill memory-hogging processes"""
+    print("🧹 Clearing GPU memory...")
+    
+    # Clear PyTorch cache
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+    
+    # Force garbage collection
+    gc.collect()
+    
+    # Get GPU memory info
+    if torch.cuda.is_available():
+        for i in range(torch.cuda.device_count()):
+            print(f"GPU {i}: {torch.cuda.memory_allocated(i) / 1024**3:.2f} GB allocated")
+            print(f"GPU {i}: {torch.cuda.memory_reserved(i) / 1024**3:.2f} GB reserved")
+
+def kill_gpu_processes():
+    """Kill processes using excessive GPU memory"""
+    print("🔫 Checking for GPU memory hogs...")
+    
+    try:
+        # Use nvidia-smi to find processes
+        import subprocess
+        result = subprocess.run(['nvidia-smi', '--query-compute-apps=pid,used_memory', '--format=csv,noheader,nounits'], 
+                               capture_output=True, text=True)
+        
+        if result.returncode == 0:
+            lines = result.stdout.strip().split('\n')
+            for line in lines:
+                if line.strip():
+                    pid, memory = line.split(',')
+                    memory_gb = float(memory.strip()) / 1024
+                    if memory_gb > 30:  # Kill processes using more than 30GB
+                        print(f"🔫 Killing process {pid} using {memory_gb:.1f} GB")
+                        try:
+                            subprocess.run(['kill', '-9', pid.strip()], check=True)
+                        except Exception:
+                            print(f"Failed to kill process {pid}")
+    except Exception as e:
+        print(f"Could not check GPU processes: {e}")
+
+def setup_memory_optimization():
+    """Set up PyTorch memory optimization"""
+    import os
+    
+    # Set PyTorch memory management
+    os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
+    
+    # Set additional optimizations
+    if torch.cuda.is_available():
+        torch.backends.cudnn.benchmark = True
+        torch.backends.cudnn.deterministic = False
+    
+    print("🚀 Memory optimization configured")
 
 
 def detect_optimal_batch_size(model, device, input_shape=(3, 224, 224), max_batch=512):
@@ -182,6 +242,11 @@ def run_deep_training(
     print(f"📁 Data directory: {data_dir}")
     print(f"📁 Devkit directory: {devkit_dir}")
     
+    # Clear GPU memory and setup optimization FIRST
+    kill_gpu_processes()
+    clear_gpu_memory()
+    setup_memory_optimization()
+    
     # Setup device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"🔧 Device: {device}")
@@ -195,7 +260,7 @@ def run_deep_training(
     config = get_preset_config('training', data_dir, devkit_dir)
     
     # Create model
-    print(f"🏗️  Creating deep MWNN model...")
+    print("🏗️  Creating deep MWNN model...")
     
     # Map complexity to depth parameter
     depth_mapping = {
@@ -205,10 +270,18 @@ def run_deep_training(
     }
     model_depth = depth_mapping.get(complexity, 'deep')
     
+    # Reduce model size for A100 memory constraints
+    gpu_name = get_gpu_info().get('name', '').upper() if torch.cuda.is_available() else ''
+    if 'A100' in gpu_name:
+        base_channels = 24  # Further reduced for A100 with memory constraints
+        print("🔧 Using reduced model size for A100 memory optimization")
+    else:
+        base_channels = 32
+    
     model = ContinuousIntegrationModel(
         num_classes=1000,  # ImageNet-1K
         depth=model_depth,
-        base_channels=32,  # Reduced from 64 to avoid channel mismatch
+        base_channels=base_channels,
         dropout_rate=0.2,
         integration_points=['early', 'middle', 'late'],
         enable_mixed_precision=True,
@@ -217,24 +290,24 @@ def run_deep_training(
     model = model.to(device)
     
     print(f"📊 Model parameters: {sum(p.numel() for p in model.parameters()):,}")
-     # Determine batch size first
+     # Determine batch size with memory-conscious approach
     if use_auto_batch_size:
-        # For A100, skip detection and use known optimal batch size
-        gpu_name = get_gpu_info().get('name', '').upper()
+        # For A100 with memory issues, use conservative batch size
+        gpu_name = get_gpu_info().get('name', '').upper() if torch.cuda.is_available() else ''
         if 'A100' in gpu_name:
-            batch_size = 128
-            print(f"🚀 Using optimized A100 batch size: {batch_size}")
+            batch_size = 48  # Very conservative for A100 with memory constraints
+            print(f"🚀 Using conservative A100 batch size: {batch_size}")
         else:
             batch_size = detect_optimal_batch_size(model, device)
     else:
-        # Default optimized batch sizes
-        gpu_name = get_gpu_info().get('name', '').upper()
+        # Default conservative batch sizes
+        gpu_name = get_gpu_info().get('name', '').upper() if torch.cuda.is_available() else ''
         if 'A100' in gpu_name:
-            batch_size = 128
+            batch_size = 48  # Very conservative for A100
         elif 'T4' in gpu_name:
-            batch_size = 64
+            batch_size = 32  # Conservative for T4
         else:
-            batch_size = 32
+            batch_size = 16  # Very conservative for other GPUs
 
     # Create datasets and dataloaders
     print("📚 Creating ImageNet dataloaders...")
@@ -460,7 +533,7 @@ if __name__ == "__main__":
                 for item in sorted(mydrive_path.iterdir()):
                     if item.is_dir():
                         print(f"   📂 {item.name}/")
-            except:
+            except Exception:
                 pass
         sys.exit(1)
     
