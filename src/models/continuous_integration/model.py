@@ -205,13 +205,14 @@ class ContinuousIntegrationModel(nn.Module):
             stage_name = f'stage_{i}'
             
             # Process stage - GPU-optimized execution
-            color, brightness, stage_integrated = stage(color, brightness, integrated)
+            # Note: Don't pass integrated to stage processing, only use it for integration
+            color, brightness, _ = stage(color, brightness, None)
             
             # Apply integration if available - optimized for GPU
             if stage_name in self.integration_modules:
-                # Reuse integrated tensor memory when possible
+                # Create integration from current stage outputs only
                 integrated = self.integration_modules[stage_name](
-                    color, brightness, stage_integrated
+                    color, brightness, None
                 )
         
         # Fused global pooling and flattening for better GPU utilization
