@@ -21,7 +21,7 @@ from datetime import datetime
 sys.path.append('.')
 
 from src.models.continuous_integration import ContinuousIntegrationModel
-from src.preprocessing.imagenet_dataset import create_imagenet_dataloaders, get_imagenet_transforms
+from src.preprocessing.imagenet_dataset import create_imagenet_separate_pathway_dataloaders, get_imagenet_transforms
 from src.preprocessing.imagenet_config import get_preset_config
 from setup_colab import get_gpu_info, get_optimal_settings
 
@@ -44,18 +44,20 @@ def detect_optimal_batch_size(model, device, input_shape=(3, 224, 224), max_batc
     # Test the starting batch size
     try:
         model.train()
-        dummy_input = torch.randn(test_batch, *input_shape).to(device)
+        # Create dual dummy inputs for RGB (3 channels) and brightness (1 channel)
+        dummy_rgb = torch.randn(test_batch, 3, 224, 224).to(device)
+        dummy_brightness = torch.randn(test_batch, 1, 224, 224).to(device)
         dummy_target = torch.randint(0, 1000, (test_batch,)).to(device)
         
         # Test forward pass
-        output = model(dummy_input)
+        output = model(dummy_rgb, dummy_brightness)
         loss = nn.CrossEntropyLoss()(output, dummy_target)
         
         # Test backward pass
         loss.backward()
         
         # Clear memory
-        del dummy_input, dummy_target, output, loss
+        del dummy_rgb, dummy_brightness, dummy_target, output, loss
         torch.cuda.empty_cache()
         
         print(f"✅ Optimal batch size: {test_batch}")
@@ -68,14 +70,15 @@ def detect_optimal_batch_size(model, device, input_shape=(3, 224, 224), max_batc
             for smaller_batch in [test_batch // 2, test_batch // 4, 16, 8]:
                 try:
                     torch.cuda.empty_cache()
-                    dummy_input = torch.randn(smaller_batch, *input_shape).to(device)
+                    dummy_rgb = torch.randn(smaller_batch, 3, 224, 224).to(device)
+                    dummy_brightness = torch.randn(smaller_batch, 1, 224, 224).to(device)
                     dummy_target = torch.randint(0, 1000, (smaller_batch,)).to(device)
                     
-                    output = model(dummy_input)
+                    output = model(dummy_rgb, dummy_brightness)
                     loss = nn.CrossEntropyLoss()(output, dummy_target)
                     loss.backward()
                     
-                    del dummy_input, dummy_target, output, loss
+                    del dummy_rgb, dummy_brightness, dummy_target, output, loss
                     torch.cuda.empty_cache()
                     
                     print(f"✅ Optimal batch size: {smaller_batch}")
@@ -100,10 +103,14 @@ def train_epoch(model, dataloader, criterion, optimizer, device, epoch):
     start_time = time.time()
     
     for batch_idx, (data, target) in enumerate(dataloader):
-        data, target = data.to(device), target.to(device)
+        # Unpack dual inputs: data is (rgb_data, brightness_data)
+        rgb_data, brightness_data = data
+        rgb_data = rgb_data.to(device)
+        brightness_data = brightness_data.to(device)
+        target = target.to(device)
         
         optimizer.zero_grad()
-        output = model(data)
+        output = model(rgb_data, brightness_data)
         loss = criterion(output, target)
         loss.backward()
         optimizer.step()
@@ -135,9 +142,13 @@ def validate_epoch(model, dataloader, criterion, device):
     
     with torch.no_grad():
         for data, target in dataloader:
-            data, target = data.to(device), target.to(device)
-            output = model(data)
-            val_loss += criterion(data, target).item()
+            # Unpack dual inputs: data is (rgb_data, brightness_data)
+            rgb_data, brightness_data = data
+            rgb_data = rgb_data.to(device)
+            brightness_data = brightness_data.to(device)
+            target = target.to(device)
+            output = model(rgb_data, brightness_data)
+            val_loss += criterion(output, target).item()
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
             total += target.size(0)
@@ -221,12 +232,11 @@ def run_deep_training(
 
     # Create datasets and dataloaders
     print("📚 Creating ImageNet dataloaders...")
-    train_loader, val_loader = create_imagenet_dataloaders(
+    train_loader, val_loader = create_imagenet_separate_pathway_dataloaders(
         data_dir=data_dir,
         devkit_dir=devkit_dir,
         batch_size=batch_size,
         input_size=config.input_size,
-        feature_method=config.feature_method,
         num_workers=config.num_workers,
         load_subset=config.load_subset,
         val_split=0.1
