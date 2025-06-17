@@ -181,7 +181,7 @@ def run_deep_training(
         print(f"💾 GPU Memory: {gpu_info.get('memory_gb', 'Unknown')} GB")
     
     # Get preset configuration for deep models
-    config = get_preset_config('deep_imagenet', data_dir, devkit_dir)
+    config = get_preset_config('training', data_dir, devkit_dir)
     
     # Create model
     print(f"🏗️  Creating deep MWNN model...")
