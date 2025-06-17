@@ -185,10 +185,23 @@ def run_deep_training(
     
     # Create model
     print(f"🏗️  Creating deep MWNN model...")
+    
+    # Map complexity to depth parameter
+    depth_mapping = {
+        'shallow': 'shallow',
+        'medium': 'medium', 
+        'deep': 'deep'
+    }
+    model_depth = depth_mapping.get(complexity, 'deep')
+    
     model = ContinuousIntegrationModel(
-        complexity=complexity,
-        dataset_name=dataset_name,
-        learning_config=config
+        num_classes=1000,  # ImageNet-1K
+        depth=model_depth,
+        base_channels=64,
+        dropout_rate=0.2,
+        integration_points=['early', 'middle', 'late'],
+        enable_mixed_precision=True,
+        memory_efficient=True
     )
     model = model.to(device)
     
