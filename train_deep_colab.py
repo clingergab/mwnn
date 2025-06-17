@@ -18,6 +18,7 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 import gc
+from tqdm.auto import tqdm
 
 sys.path.append('.')
 
@@ -154,7 +155,7 @@ def detect_optimal_batch_size(model, device, input_shape=(3, 224, 224), max_batc
 
 
 def train_epoch(model, dataloader, criterion, optimizer, device, epoch):
-    """Train for one epoch"""
+    """Train for one epoch with visual progress bar"""
     model.train()
     running_loss = 0.0
     correct = 0
@@ -162,7 +163,16 @@ def train_epoch(model, dataloader, criterion, optimizer, device, epoch):
     
     start_time = time.time()
     
-    for batch_idx, (data, target) in enumerate(dataloader):
+    # Create progress bar for batches
+    progress_bar = tqdm(
+        enumerate(dataloader), 
+        total=len(dataloader),
+        desc=f'🚀 Epoch {epoch}',
+        ncols=100,
+        leave=True
+    )
+    
+    for batch_idx, (data, target) in progress_bar:
         # Unpack dual inputs: data is (rgb_data, brightness_data)
         rgb_data, brightness_data = data
         rgb_data = rgb_data.to(device)
@@ -180,28 +190,43 @@ def train_epoch(model, dataloader, criterion, optimizer, device, epoch):
         correct += pred.eq(target.view_as(pred)).sum().item()
         total += target.size(0)
         
-        if batch_idx % 100 == 0:
-            print(f'Epoch {epoch}, Batch {batch_idx}, Loss: {loss.item():.4f}, '
-                  f'Acc: {100.*correct/total:.2f}%')
+        # Update progress bar with current metrics
+        current_acc = 100. * correct / total
+        current_loss = running_loss / (batch_idx + 1)
+        
+        progress_bar.set_postfix({
+            'Loss': f'{current_loss:.4f}',
+            'Acc': f'{current_acc:.2f}%',
+            'LR': f'{optimizer.param_groups[0]["lr"]:.2e}'
+        })
     
     epoch_time = time.time() - start_time
     epoch_loss = running_loss / len(dataloader)
     epoch_acc = 100. * correct / total
     
-    print(f'Epoch {epoch} - Loss: {epoch_loss:.4f}, Acc: {epoch_acc:.2f}%, Time: {epoch_time:.1f}s')
+    # Final epoch summary
+    tqdm.write(f'✅ Epoch {epoch} Complete - Loss: {epoch_loss:.4f}, Acc: {epoch_acc:.2f}%, Time: {epoch_time:.1f}s')
     
     return epoch_loss, epoch_acc
 
 
 def validate_epoch(model, dataloader, criterion, device):
-    """Validate the model"""
+    """Validate the model with visual progress bar"""
     model.eval()
     val_loss = 0
     correct = 0
     total = 0
     
+    # Create progress bar for validation
+    progress_bar = tqdm(
+        dataloader, 
+        desc='🔍 Validation',
+        ncols=100,
+        leave=False
+    )
+    
     with torch.no_grad():
-        for data, target in dataloader:
+        for data, target in progress_bar:
             # Unpack dual inputs: data is (rgb_data, brightness_data)
             rgb_data, brightness_data = data
             rgb_data = rgb_data.to(device)
@@ -212,11 +237,20 @@ def validate_epoch(model, dataloader, criterion, device):
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
             total += target.size(0)
+            
+            # Update progress bar
+            current_acc = 100. * correct / total
+            current_loss = val_loss / (len(progress_bar.iterable) - len(progress_bar.iterable) + progress_bar.n + 1)
+            
+            progress_bar.set_postfix({
+                'Loss': f'{current_loss:.4f}',
+                'Acc': f'{current_acc:.2f}%'
+            })
     
     val_loss /= len(dataloader)
     val_acc = 100. * correct / total
     
-    print(f'Validation - Loss: {val_loss:.4f}, Acc: {val_acc:.2f}%')
+    tqdm.write(f'✅ Validation Complete - Loss: {val_loss:.4f}, Acc: {val_acc:.2f}%')
     
     return val_loss, val_acc
 
@@ -361,8 +395,18 @@ def run_deep_training(
     print("\n🎯 Starting training...")
     start_time = time.time()
     
-    for epoch in range(1, epochs + 1):
-        print(f"\n📈 Epoch {epoch}/{epochs}")
+    # Create overall training progress bar
+    epoch_progress = tqdm(
+        range(1, epochs + 1), 
+        desc='🏋️ Overall Training',
+        ncols=120,
+        position=0,
+        leave=True
+    )
+    
+    for epoch in epoch_progress:
+        # Update epoch progress description
+        epoch_progress.set_description(f'🏋️ Training Epoch {epoch}/{epochs}')
         
         # Train
         train_loss, train_acc = train_epoch(model, train_loader, criterion, optimizer, device, epoch)
@@ -377,7 +421,14 @@ def run_deep_training(
         # Update learning rate
         scheduler.step()
         current_lr = scheduler.get_last_lr()[0]
-        print(f"📚 Learning rate: {current_lr:.6f}")
+        
+        # Update epoch progress bar with metrics
+        epoch_progress.set_postfix({
+            'Train_Acc': f'{train_acc:.2f}%',
+            'Val_Acc': f'{val_acc:.2f}%',
+            'Best_Val': f'{max(val_accs):.2f}%',
+            'LR': f'{current_lr:.2e}'
+        })
         
         # Save best model
         if val_acc > best_val_acc:
