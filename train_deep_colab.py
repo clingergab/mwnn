@@ -292,22 +292,22 @@ def run_deep_training(
     print(f"📊 Model parameters: {sum(p.numel() for p in model.parameters()):,}")
      # Determine batch size with memory-conscious approach
     if use_auto_batch_size:
-        # For A100 with memory issues, use conservative batch size
+        # For A100, use optimized batch size based on available memory
         gpu_name = get_gpu_info().get('name', '').upper() if torch.cuda.is_available() else ''
         if 'A100' in gpu_name:
-            batch_size = 48  # Very conservative for A100 with memory constraints
-            print(f"🚀 Using conservative A100 batch size: {batch_size}")
+            batch_size = 128  # Optimized for A100 - much better utilization
+            print(f"🚀 Using optimized A100 batch size: {batch_size}")
         else:
             batch_size = detect_optimal_batch_size(model, device)
     else:
-        # Default conservative batch sizes
+        # Default optimized batch sizes
         gpu_name = get_gpu_info().get('name', '').upper() if torch.cuda.is_available() else ''
         if 'A100' in gpu_name:
-            batch_size = 48  # Very conservative for A100
+            batch_size = 128  # Optimized for A100 (was 48)
         elif 'T4' in gpu_name:
-            batch_size = 32  # Conservative for T4
+            batch_size = 64   # Increased from 32
         else:
-            batch_size = 16  # Very conservative for other GPUs
+            batch_size = 32   # Increased from 16
 
     # Create datasets and dataloaders
     print("📚 Creating ImageNet dataloaders...")
