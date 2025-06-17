@@ -56,22 +56,27 @@ def test_model_step_by_step():
     
     from src.models.continuous_integration.model import ContinuousIntegrationModel
     
+    # Use CPU to avoid device issues during debugging
+    device = torch.device('cpu')
+    
     model = ContinuousIntegrationModel(
         num_classes=1000,
         depth='deep', 
         base_channels=28,
         dropout_rate=0.2,
         integration_points=['early', 'middle', 'late'],
-        enable_mixed_precision=True,
+        enable_mixed_precision=False,  # Disable for debugging
         memory_efficient=True
     )
+    model = model.to(device)
     
-    # Test inputs
+    # Test inputs on CPU
     batch_size = 2
-    rgb_data = torch.randn(batch_size, 3, 224, 224)
-    brightness_data = torch.randn(batch_size, 1, 224, 224)
+    rgb_data = torch.randn(batch_size, 3, 224, 224).to(device)
+    brightness_data = torch.randn(batch_size, 1, 224, 224).to(device)
     
     print(f"Input shapes - RGB: {rgb_data.shape}, Brightness: {brightness_data.shape}")
+    print(f"Device: {device}")
     
     try:
         # Step 1: Initial processing
@@ -101,6 +106,12 @@ def test_model_step_by_step():
                     
             except Exception as e:
                 print(f"  ❌ Error in stage {i}: {e}")
+                # Print more debug info
+                print(f"  🔍 Stage details:")
+                print(f"    Expected in_channels: {stage.color_blocks[0].conv1.in_channels}")
+                print(f"    Expected out_channels: {stage.color_blocks[0].conv1.out_channels}")
+                print(f"    Actual color channels: {color.shape[1]}")
+                print(f"    Actual brightness channels: {brightness.shape[1]}")
                 break
                 
     except Exception as e:
