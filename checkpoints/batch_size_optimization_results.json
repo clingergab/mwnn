@@ -1,0 +1,505 @@
+{
+  "gpu_info": null,
+  "device": "cpu",
+  "batch_size_results": {
+    "shallow_10": {
+      "model_config": {
+        "num_classes": 10,
+        "depth": "shallow",
+        "base_channels": 32
+      },
+      "total_parameters": 288819,
+      "max_successful_batch": 0,
+      "results": [
+        {
+          "batch_size": 8,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 16,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 24,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 32,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 48,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 64,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 96,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 128,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 192,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 256,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 384,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 512,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        }
+      ]
+    },
+    "shallow_100": {
+      "model_config": {
+        "num_classes": 100,
+        "depth": "shallow",
+        "base_channels": 32
+      },
+      "total_parameters": 291789,
+      "max_successful_batch": 0,
+      "results": [
+        {
+          "batch_size": 8,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 16,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 24,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 32,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 48,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 64,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 96,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 128,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 192,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 256,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 384,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 512,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        }
+      ]
+    },
+    "shallow_1000": {
+      "model_config": {
+        "num_classes": 1000,
+        "depth": "shallow",
+        "base_channels": 32
+      },
+      "total_parameters": 321489,
+      "max_successful_batch": 0,
+      "results": [
+        {
+          "batch_size": 8,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 16,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 24,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 32,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 48,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 64,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 96,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 128,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 192,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 256,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 384,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 512,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        }
+      ]
+    },
+    "medium_100": {
+      "model_config": {
+        "num_classes": 100,
+        "depth": "medium",
+        "base_channels": 64
+      },
+      "total_parameters": 2363952,
+      "max_successful_batch": 0,
+      "results": [
+        {
+          "batch_size": 8,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 16,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 24,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 32,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 48,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 64,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 96,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 128,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 192,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 256,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 384,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 512,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        }
+      ]
+    },
+    "medium_1000": {
+      "model_config": {
+        "num_classes": 1000,
+        "depth": "medium",
+        "base_channels": 64
+      },
+      "total_parameters": 2422452,
+      "max_successful_batch": 0,
+      "results": [
+        {
+          "batch_size": 8,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 16,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 24,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 32,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 48,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 64,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 96,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 128,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 192,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 256,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 384,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 512,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        }
+      ]
+    },
+    "deep_100": {
+      "model_config": {
+        "num_classes": 100,
+        "depth": "deep",
+        "base_channels": 64
+      },
+      "total_parameters": 45202416,
+      "max_successful_batch": 0,
+      "results": [
+        {
+          "batch_size": 8,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 16,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 24,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 32,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 48,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 64,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 96,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 128,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 192,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 256,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 384,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 512,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        }
+      ]
+    },
+    "deep_1000": {
+      "model_config": {
+        "num_classes": 1000,
+        "depth": "deep",
+        "base_channels": 64
+      },
+      "total_parameters": 45433716,
+      "max_successful_batch": 0,
+      "results": [
+        {
+          "batch_size": 8,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 16,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 24,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 32,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 48,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 64,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 96,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 128,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 192,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 256,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 384,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        },
+        {
+          "batch_size": 512,
+          "error": "Input type (MPSHalfType) and weight type (torch.FloatTensor) should be the same",
+          "success": false
+        }
+      ]
+    }
+  },
+  "recommendations": {},
+  "timestamp": "2025-06-16 20:18:50"
+}

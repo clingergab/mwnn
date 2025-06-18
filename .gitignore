@@ -27,22 +27,25 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# PyTorch
+# PyTorch model files (trained weights, not config files)
 *.pth
 *.pt
-checkpoint/
-checkpoints/
+models/*.pth
+models/*.pt
+trained_models/
+saved_models/
+model_weights/
 
-# Tensorboard
-logs/
+# Tensorboard logs
+logs/*.tfevents.*
 runs/
 *.tfevents.*
 
-# Jupyter Notebook
-.ipynb_checkpoints
-*.ipynb
+# Jupyter Notebook checkpoints (but keep .ipynb files)
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
 
-# Environment
+# Python virtual environments
 .env
 .venv
 env/
@@ -51,7 +54,7 @@ ENV/
 env.bak/
 venv.bak/
 
-# IDEs
+# IDEs and editors
 .idea/
 .vscode/
 *.swp
@@ -60,7 +63,7 @@ venv.bak/
 .project
 .pydevproject
 
-# OS
+# OS generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -69,28 +72,31 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
-# Data
-data/
-datasets/
-*.csv
-*.json
-*.txt
-*.xml
+# Large datasets (keep directory structure, ignore large files)
+data/*/train/
+data/*/val/
+data/*/test/
+data/*/*.tar.gz
+data/*/*.zip
+data/*/*.rar
+# Ignore everything inside ImageNet-1K folder (except .gitkeep if present)
+data/ImageNet-1K/*
+!data/ImageNet-1K/.gitkeep
+data/MNIST/mnist_train.csv
+data/MNIST/mnist_test.csv
 
-# Model outputs (trained model files, not source code)
-trained_models/
-saved_models/
-model_weights/
-outputs/
-results/
-experiments/
+# Large binary files and media
+*.tar.gz
+*.zip
+*.rar
+*.7z
 
-# Documentation
+# Documentation build artifacts
 docs/_build/
 docs/_static/
 docs/_templates/
 
-# Testing
+# Testing artifacts
 .tox/
 .nox/
 .coverage
@@ -102,20 +108,36 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+htmlcov/
 
 # Profiling
 *.prof
 *.lprof
 
-# Misc
+# Temporary files
+*.tmp
+*.temp
 *.log
 *.bak
+*.swp
+*~
+
+# MyPy
 .mypy_cache/
 .dmypy.json
 dmypy.json
-# Large binary files
-*.png
-*.tar.gz
-*.jpg
-*.jpeg
-*.gif
+
+# Environments and secrets
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# Experiment outputs (large files)
+outputs/
+results/experimental/
+checkpoints/*.pth
+checkpoints/*.pt
+
+# Wandb artifacts
+wandb/

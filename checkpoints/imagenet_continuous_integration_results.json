@@ -1,0 +1,26 @@
+{
+  "model_name": "continuous_integration",
+  "epochs": 2,
+  "training_time": 58.91456389427185,
+  "best_val_acc": 0.0,
+  "final_train_acc": 0.0,
+  "final_val_acc": 0.0,
+  "history": {
+    "train_loss": [
+      7.012566328048706,
+      6.433768033981323
+    ],
+    "train_accuracy": [
+      0.0,
+      0.0
+    ],
+    "val_loss": [
+      6.925271034240723,
+      7.068519115447998
+    ],
+    "val_accuracy": [
+      0.0,
+      0.0
+    ]
+  }
+}
