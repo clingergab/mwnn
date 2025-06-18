@@ -1,33 +1,21 @@
 # Multi-Weight Neural Networks (MWNN)
 
+> **📋 For clean documentation and API usage, see [`README_CLEAN.md`](README_CLEAN.md)**
+
 A PyTorch implementation of Multi-Weight Neural Networks for Enhanced Visual Processing with RGB+Luminance feature extraction, inspired by biological visual systems that process color and brightness through separate pathways.
 
-## Overview
+## Quick Start
 
-Multi-Weight Neural Networks (MWNNs) employ multiple weight connections between neurons to separately process distinct features like color and brightness. This implementation features a state-of-the-art **RGB+Luminance approach** that preserves all original RGB data while adding explicit luminance information for optimal pathway separation.
+```python
+from src.mwnn import MWNN
 
-### Key Features
+# Simple model creation and training
+model = MWNN(num_classes=1000, model_type='continuous_integration')
+model.fit(train_loader, val_loader, epochs=30)
+model.evaluate(test_loader)
+```
 
-- **🎯 RGB+Luminance Processing (Primary)**:
-  - Lossless 4-channel approach: RGB + ITU-R BT.709 luminance
-  - Zero information loss from original images
-  - Clean separation of color and brightness pathways
-  - Shape transformation: `(B, 3, H, W) → (B, 4, H, W)`
-
-- **🔄 Multiple Architecture Options**: 
-  - Multi-Channel Networks with separate outputs
-  - Continuous Integration Networks with learnable fusion
-  - Cross-Modal Networks with inter-pathway influence
-  - Single-Output Networks with specialized weights
-  - Attention-Based Networks with cross-modal attention
-
-- **⚙️ Flexible Feature Extraction**:
-  - **RGB+Luminance** (default): Lossless 4-channel processing
-  - **Legacy support**: HSV, YUV, LAB color space conversions
-  - Learned feature separation capabilities
-  - Multi-modal sensor fusion support
-
-- **🚀 Production-Ready**:
+## Key Features
   - Comprehensive test suite (85%+ pass rate)
   - Complete configuration management with YAML presets
   - ImageNet-1K preprocessing pipeline

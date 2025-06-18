@@ -1,7 +1,6 @@
-# mwnn/training/__init__.py
 """Training utilities for Multi-Weight Neural Networks."""
 
-from .trainer import Trainer, MultiStageTrainer
+from .trainer import MWNNTrainer
 from .losses import (
     MultiPathwayLoss,
     IntegrationRegularizationLoss,
@@ -17,8 +16,7 @@ from .metrics import (
 )
 
 __all__ = [
-    'Trainer',
-    'MultiStageTrainer',
+    'MWNNTrainer',
     'MultiPathwayLoss',
     'IntegrationRegularizationLoss',
     'PathwayBalanceLoss',
